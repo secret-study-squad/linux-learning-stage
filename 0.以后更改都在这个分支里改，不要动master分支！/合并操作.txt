@@ -1,17 +1,27 @@
-1. 切换到 master 分支
-git checkout master
+1. 切换到 main 分支
+git checkout main
 
-2. 拉取远程 master 的最新代码（如果多人协作，这步必做）
-git pull origin master
+2. 拉取远程 main 的最新代码（如果多人协作，这步必做）
+git pull origin main
 
-3. 合并 temp 分支到 master
+3. 合并 temp 分支到 main
 git merge temp
 
 4. 如果提示合并冲突，手动修改（保留正确代码，删除冲突标记），解决后，标记文件为已解决：
 git add 冲突文件名  # 比如 git add app.py
 
 5. 完成合并提交：
-git commit -m "解决合并冲突，同步temp分支到master"
+git commit -m "解决合并冲突，同步temp分支到main"
 
-6. 推送合并后的 master 到远程
-git push origin master
+6. 推送合并后的 main 到远程
+git push origin main
+
+
+
+
+
+# 同步main、覆盖temp、强制推送
+git checkout main && git pull origin main && git checkout temp && git reset --hard origin/main && git push -f origin temp
+
+# 同步temp、覆盖main、强制推送
+git checkout temp && git pull origin temp && git checkout main && git reset --hard origin/temp && git push -f origin main
