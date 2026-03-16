@@ -118,7 +118,7 @@
 
    
 
-3. gcc的条件编译
+3. **gcc的条件编译**
 
    格式：
    
@@ -128,14 +128,15 @@
    ​#endif
    ```
    
-4. makefile的使用
+4. **makefile的使用**
 
    make命令提供了两个关键参数来实现跨目录调用 Makefile：
 
-   方法1: -f参数(指定makefile文件)，语法：
-
+   ```c
+   // 方法1： -f参数(指定makefile文件)，语法：
+   make --file /路径/到/Makefile [目标]
+   // 简写
    make -f /路径/到/Makefile [目标]
-
-    # 简写 make --file /路径/到/Makefile [目标]
+   ```
 
 5. 
