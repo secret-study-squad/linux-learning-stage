@@ -35,4 +35,21 @@
 
 6. **标题**-- zzc
 
+   生成一个可执行程序main
+   
+   ~~~makefile
+   OUT := main
+   SRCS := $(wildcard *.c)
+   OBJS := $(patsubst %.c, %.o, $(SRCS))
+   
+   $(OUT) : $(OBJS)
+   	$(CC) $^ -o $@
+   %.o : %.c
+   	$(CC) -c $^ -o $@
+   .PHONY : clean rebuild
+   clean : 
+   	$(RM) $(OBJS) $(OUT)
+   rebuild : clean main
+   ~~~
+   
    
