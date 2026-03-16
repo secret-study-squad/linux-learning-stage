@@ -6,6 +6,19 @@
 
 2. **标题**-- cjs
 
+   ```bash
+   vim 中操作多窗口
+   :new test.c -->上下分屏   :sp test.c 也是上下分屏 
+   :vnew test.c --->左右分屏 :vsp test.c 也是左右分屏
+   多窗口的切换
+   ctrl + w,W (连续按两下w)
+   
+   vim中操作多标签
+   :tabnew test.c
+   切换多标签
+   gt / gT
+   ```
+
    
 
 3. **标题**-- xkz
