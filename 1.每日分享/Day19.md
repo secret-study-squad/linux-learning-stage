@@ -23,6 +23,18 @@
 
 3. **标题**-- xkz
 
+   ```c
+   #include<dirent.h>
+   long ret=telldir(DIR *dirp);
+   //设置目录流指针的位置，靠long型返回值来进行移动
+   ```
+
+   ```c
+   #include<dirent.h>
+   seekdir(DIR *dirp, long ret);
+   //在telldir记录位置后，使用ret返回值进行传送移动
+   ```
+
    
 
 4. **标题**-- zjl
@@ -36,7 +48,7 @@
 6. **标题**-- zzc
 
    生成一个可执行程序main
-   
+
    ~~~makefile
    OUT := main
    SRCS := $(wildcard *.c)
@@ -51,5 +63,5 @@
    	$(RM) $(OBJS) $(OUT)
    rebuild : clean main
    ~~~
-   
+
    
