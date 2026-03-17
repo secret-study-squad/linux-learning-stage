@@ -2,7 +2,15 @@
 
 1. **标题**-- gzh
 
-   
+   | 别名        | 原名           | 占位&说明 |
+   | :---------- | :------------- | :-------- |
+   | d_ino       | unsigned long  | %lu       |
+   | off_t       | long           | %ld       |
+   |             | unsigned short | %hu       |
+   |             | unsigned char  | %hhu      |
+   | mode_t      | usigned int    | %u        |
+   | nlink_t     | usigned long   | %lu       |
+   | uid_t gid_t | usigned int    | %u        |
 
 2. **标题**-- cjs
 
