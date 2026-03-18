@@ -2,7 +2,25 @@
 
 1. **标题**-- gzh
 
-   
+   | 函数声明(返回值-函数名-参数)                                 | 头文件                                                       | 作用                                                     |
+   | :----------------------------------------------------------- | :----------------------------------------------------------- | :------------------------------------------------------- |
+   | int chmod(const char *pathname, mode_t mode);                | #include <sys/stat.h>                                        | 改变文件的权限                                           |
+   | char *getcwd(char *buf, size_t size);                        | #include <unistd.h>                                          | 获取当前工作目录                                         |
+   | int chdir(const char *path);                                 | #include <unistd.h>                                          | 改变当前工作目录                                         |
+   | int mkdir(const char *pathname, mode_t mode);                | #include <sys/stat.h> #include <sys/types.h>                 | 创建目录                                                 |
+   | int rmdir(const char *pathname);                             | #include <unistd.h>                                          | 删除目录                                                 |
+   | DIR ***opendir**(const char *name); int closedir(DIR *dirp); | #include <dirent.h> #include <sys/types.h>                   | 打开目录流 关闭目录流                                    |
+   | struct dirent *readdir(DIR *dirp);                           | #include <dirent.h>                                          | 通过目录流读取下一个目录项                               |
+   | long telldir(DIR *dirp); void seekdir(DIR *dirp, long loc);  | #include <dirent.h>                                          | 记录目录流指针的位置 返回记录的位置                      |
+   | void rewinddir(DIR *dirp);                                   | #include <dirent.h>                                          | 重置目录流的位置到开始处                                 |
+   | int stat(const char *path, struct stat *buf);                | #include <sys/stat.h>                                        | 用于获取指定文件的相关详细信息 主要包括各种元数据信息    |
+   | **POSIX标准库函数** struct passwd *getpwuid(uid_t uid); struct passwd *getpwuid(uid_t uid); | #include<sys/types.h> #include <pwd.h> #include <grp.h>      | 已经有用户UID以及组ID，则 将uid和gid成员转换成对应字符串 |
+   | struct tm *localtime(const time_t *timer);                   | #include <time.h>                                            | 处理最后修改时间戳                                       |
+   | int open(const char *pathname, int flags); int open(const char *pathname, int flags, mode_t mode); | #include <fcntl.h>  #include <sys/types.h> #include <sys/stat.h> | 打开一个已存在的文件或创建一个新文件                     |
+   | ssize_t read(int fd, void *buf, size_t count);               | #include <unistd.h>                                          | 用户进程从内核区域中直接将数据读取出来                   |
+   | ssize_t write(int fd, const void *buf, size_t count);        | #include <unistd.h>                                          | 用户进程直接将内存数据写入到内核区域中                   |
+   | int ftruncate(int fd, off_t length);                         | #include <unistd.h>                                          | 改变已打开文件的长度，这个函数允许你增大或减小文件的大小 |
+   | off_t lseek(int fd, off_t offset, int whence);               | #include <unistd.h>                                          | 修改当前文件描述符（fd）对应的读写位置                   |
 
 2. **标题**-- cjs
 
