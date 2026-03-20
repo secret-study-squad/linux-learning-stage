@@ -124,9 +124,7 @@
 
    **伪代码示例：**
 
-   C++
-
-   ```
+   ```c++
    void push(T item) {
        std::unique_lock<std::mutex> lock(mtx);
        // 如果满了，就交出锁，在 not_full 条件上睡一觉
@@ -138,7 +136,7 @@
        cv_not_empty.notify_one(); 
    }
    ```
-
+   
    ------
 
    ### 4. 常见的阻塞队列类型
