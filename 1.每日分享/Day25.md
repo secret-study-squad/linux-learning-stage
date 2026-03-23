@@ -17,7 +17,24 @@
      假设n1最少，则n0+n2为2000或者近似于2000，所以最多只有n0 = 1000，n2有999个，还有一个n1结点
      ```
 
-2. **标题** -- cjs
+2. **waitpid**函数 -- cjs
+
+   ```c
+   waitpid函数的作用是等待一个已经退出的子进程，并进行清理工作。
+   
+   waitpid 等待一个指定退出的子进程，并返回该子进程的PID
+   waitpid 是一个阻塞函数
+   pid_t waitpid(
+       pid_t pid,      // 指定等待的PID的子进程
+       int *wstatus,   // 存储进程的退出状态
+       int options     // 修改 waitpid 的行为的选项, 默认0
+   );
+   PID数值	效果
+   < -1	等待进程PID和pid绝对值的进程
+   == -1	等待任一个子进程, 等价于wait
+   == 0 	等待同一进程组的任意子进程
+   waitpid是阻塞函数，如果给waitpid 的options参数设置一个名为WNOHANG的宏，则系统调用会变成非阻塞模式。
+   ```
 
    
 
