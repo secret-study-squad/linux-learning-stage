@@ -1,6 +1,10 @@
 #include <my_header.h>
 #define BUF_SIZE 1024
-
+/*
+用法：./T5.usera 主机a上待发送文件的绝对路径 想发送到主机b上的绝对路径
+举例：主机a上/home/a/test/1.txt这个文件我想发送到主机b的/home/b/file/2.txt这个地方，途中缺失的目录与文件会自动创建
+	 那么完整的shell命令就是："./T5.usera /home/a/test/1.txt /home/b/file/2.txt"
+*/
 int main(int argc, char* argv[]){                                  
     ARGS_CHECK(argc, 3);
 
