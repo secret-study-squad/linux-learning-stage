@@ -43,7 +43,26 @@
    }
    ```
 
-2. **标题** -- cjs
+2. **有名管道和匿名管道** -- cjs
+
+   ```c
+   有名管道的创建
+   int mkfifo(
+       const char *pathname, // 要创建的命名管道的路径名
+       mode_t mode // 指定新管道的权限(掩码)
+   );
+    
+   删除有名管道   
+   int unlink(
+       const char *pathname // 要删除的文件的路径名
+   );
+   创建匿名管道
+   // create pipe
+   int pipe(
+       int pipefd[2]//包含两个文件描述符的整型数组。pipefd[0]读取端文件描述符，pipefd[1]写端文件描述符。
+   );
+   功能:创建一个匿名管道，需要传入一个数组，其中下标0 为读，1为写
+   ```
 
    
 
