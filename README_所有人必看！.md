@@ -37,4 +37,19 @@
    git push
    ```
 
+
+## 2.补充
+
+1. 针对新加入成员需要完成的操作（默认到这里已经完成git clone操作）
+
+   ```c
+   git pull
+   
+   git fetch origin
+   
+   git checkout -b temp origin/temp
+   
+   git branch
+   ```
+
    
