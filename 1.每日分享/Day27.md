@@ -8,9 +8,27 @@
 
    
 
-3. **标题** -- xkz
+3. **常见信号** -- xkz
 
-   
+   1.**SIGINT**   键盘中断  终止进程
+
+   ctrl c ;  kill -2 [pid]
+
+   2.**SIGQUIT**键盘退出，终止进程  产生转储文件/core/dumped   也可设置ulimit中的core-file-size为0，不生成
+
+   ctrl \;kill -3 [pid]
+
+   3.**SIGKILL**  强制终止进程
+
+   kill -9 [pid]  不可捕获，不可忽略，不可阻塞
+
+   4.**SIGSTOP**  暂停进程
+
+   ctrl z;kill -19[pid]
+
+   5.**SIGCONT** 继续暂停的进程
+
+   kill -18 [pid]  
 
 4. **标题** -- zjl
 
