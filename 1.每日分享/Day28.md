@@ -1,14 +1,210 @@
 ## Day28_Thursday_Week5_3.26
 
-1. **五个重要的信号** -- gzh
+1. **信号相关的函数与结构体** -- gzh
 
-   |   Signal    |   value    | Action |                    Comment                    |
-   | :---------: | :--------: | :----: | :-------------------------------------------: |
-   | **SIGINT**  |     2      |  Term  |   键盘中断(Ctrl+C触发) (默认行为:终止进程)    |
-   | **SIGQUIT** |     3      |  Core  |   键盘退出(Ctrl+\触发) (默认行为:终止进程)    |
-   | **SIGKILL** |     9      |  Term  |                   终止进程                    |
-   | **SIGCONT** | 19, 18, 25 |  Cont  |                暂停后恢复运行                 |
-   | **SIGSTOP** | 17, 19, 23 |  Stop  | 暂停进程(可通过Ctrl+Z触发)(SIGCONT或者fg恢复) |
+   ==**相关函数**==
+
+   1. **signal**
+
+      用来捕获信号并且指定对应的信号处理行为
+
+      ```c
+      #include <signal.h>
+      // 定义信号处理函数的类型: int类型的参数(信号编号), void返回值
+      typedef void (*sighandler_t)(int);
+      
+      sighandler_t signal(
+          int signum, // 要处理的信号编号(Eg:SIGINT、SIGTERM...)(Eg:2,15...)
+          sighandler_t handler // 指向信号处理函数(回调机制): 如上面sighandler_t定义, (另外:SIG_IGN表示忽略信号; SIG_DFL表示恢复信号的默认行为)
+      );
+      // 返回值: 成功返回关联的指定信号的处理函数的指针; 失败返回SIG_ERR
+      ```
+
+   2. **sigaction**
+
+      在**signal**的基础上更精确控制信号处理行为                   			<a id="sigaction back"></a>[跳转到结构体struct sigaction](#sigaction)
+
+      ```c
+      #include <signal.h>
+      // examine and change a signal action
+      int sigaction(
+          int signum,                  // 要操作的信号编号(除了不能捕获的SIGKILL和SIGSTOP)
+          const struct sigaction *act, // 指定信号的新处理动作(如果非空)
+          struct sigaction *oldact     // 获取信号的上一个处理动作(如果非空)
+      );
+      // 返回值: 成功时返回0，错误时返回-1
+      ```
+
+   3. **操作sigset_t类型变量(即struct sigaction中的sa_mask成员)的一系列函数**
+
+      ```c
+      sigemptyset(sigset_t *set)：// 初始化信号集，清除所有信号。
+      sigfillset(sigset_t *set)：// 添加所有信号到信号集中。
+      sigaddset(sigset_t *set, int signo)：// 向信号集添加一个信号。
+      sigdelset(sigset_t *set, int signo)：// 从信号集中删除一个信号。
+      sigismember(const sigset_t *set, int signo)：// 检查一个特定信号是否在信号集中。
+      ```
+
+   4. **sigpending**
+
+      用于检查当前进程的未决信号集，即那些已经发送给进程但由于某种原因（通常是因为被阻塞）尚未被处理的信号。这个函数可以用来确定哪些信号已经被产生并等待处理，但尚未被当前进程捕获或忽略。
+
+      ```c
+      #include <signal.h>
+      // examine pending signals
+      int sigpending(
+          sigset_t *set // 接收当前进程的未决信号集
+      );
+      // 返回值: 成功时返回0，失败返回-1
+      ```
+
+   5. **sigprocmask**
+
+      用于在系统中检查和更改进程的信号屏蔽字（即信号掩码mask）。信号掩码确定了哪些信号可以递送给该进程，哪些信号被阻塞。和前面通过sigaction函数设置的sa_mask阻塞机制不同的是, **sigaction**函数设置的sa_mask阻塞是**临时屏蔽**。而**sigprocmask**函数修改信号掩码mask是**全程屏蔽**. (man sigprocmask)
+
+      ```c
+      #include <signal.h>
+      // examine and change blocked signals
+      int sigprocmask(
+          int how, // 如何修改信号掩码.SIG_BLOCK:把set内信号添加阻塞;SIG_UNBLOCK:解除set内信号阻塞; SIG_SETMASK:将信号掩码替换为set指定信号
+          const sigset_t *set, // 信号集合
+          sigset_t *oldset // 当前信号掩码
+      );
+      // 返回值: 成功返回0, 失败返回-1
+      ```
+
+   6. **kill**
+
+      用来给另一个进程**发送信号**
+
+      ```c
+      #include <sys/types.h>
+      #include <signal.h>
+      // send signal to a process
+      int kill(
+          pid_t pid, //表示进程ID (另外  0:发送信号到与发送进程相同进程组的所有进程;  -1:表示所有可以发送信号的进程发送信号; 小于-1:则根据其绝对值去关闭其作为组长的进程组)
+          int sig // 信号数值
+      );
+      // 返回值: 成功0, 失败-1
+      ```
+
+   7. **pause**
+
+      使调用进程挂起（即暂停执行）（==**注意：挂起完全不等于阻塞**==），直到该进程捕获到一个信号。换句话说，**pause函数**让进程休眠，等待任何类型的信号到来；一旦接收到信号，如果有为该信号定义的处理函数，则执行该函数。如果没有为信号定义处理函数（或者信号的行为是默认的），进程会根据信号的默认行为来响应。
+
+      ```c
+      #include <unistd.h>
+      // wait for signal
+      int pause(void);
+      ```
+
+   8. **sigsuspend**
+
+      <span style=color:red;background:yellow;font-size:16px>**原子地**</span>更改进程的信号屏蔽字（block mask）并挂起进程执行，直到捕获到一个信号
+
+      - 更改信号掩码和挂起进程之间提供原子操作
+      - 在sigsuspend返回后，**进程的信号掩码会自动恢复到调用sigsuspend之前的状态（即mask会回退）**
+
+      ```c
+      #include <signal.h>
+      // wait for a signal
+      int sigsuspend(
+          const sigset_t *mask // 指定了在挂起期间要设置的新信号掩码
+      );
+      ```
+
+   9. **alarm**
+
+      用于设置一个计时器（定时器），该计时器在指定的秒数后到期。当计时器到期时，内核会向该进程发送 `SIGALRM` 信号。如果程序没有捕获或忽略该信号，则其默认行为是终止进程
+
+      ```c
+      #include <unistd.h>
+      // set an alarm clock for delivery of a signal
+      unsigned int alarm(unsigned int seconds);
+      ```
+
+   10. **setitimer**													                       		   <a id="itimerval back"></a> [跳转到结构体struct itimerval](#itimerval)
+
+       一个高级定时器接口，相较于**alarm函数**，它提供了更多的灵活性和精度
+
+       ```c
+       #include <sys/time.h>
+       // set value of an interval timer
+       int setitimer(
+           int which, // 定时器的类型
+           const struct itimerval *new_value, // 指定的新的定时器值
+           struct itimerval *old_value // 存储定时器的前一个值
+       );
+       // 返回值: 成功0, 失败-1
+       ```
+
+   11. **getitimer**                                                                                                                                                     [跳转到结构体struct itimerval](#itimerval)
+
+       用来**获取当前进程的间隔定时器状态**：**查看当前定时器还剩多少时间 + 是否在循环触发**
+
+       ```c
+       #include <sys/time.h>
+       // get value of an interval timer
+       int getitimer(
+           int which, // 定时器的类型
+           struct itimerval *curr_value // 
+       );
+       ```
+
+   ==**结构体**==
+
+   1. **struct sigaction**										        																<a id="sigaction"></a>[返回sigaction](#sigaction back)
+
+      ```c
+      // 是用于定义信号处理的行为
+      struct sigaction 
+      {
+          void     (*sa_handler)(int);// 函数指针:指向一个信号处理函数 (和sa_sigaction选一个即可)
+          void     (*sa_sigaction)(int, siginfo_t *, void *);// 函数指针:指向一个接受三个参数的信号处理函数
+          sigset_t   sa_mask;// 信号集: 指定当前信号处理函数执行时需要阻塞的额外信号
+          int        sa_flags;// 指定信号处理的选项和标志: 
+          void     (*sa_restorer)(void);// 过时,暂无用
+      };
+      ```
+
+      ```c
+      siginfo_t 
+      {
+          //...
+          pid_t    si_pid;   /* Sending process ID */
+          sigval_t si_value; /* Signal value */
+           // ......
+      }
+      ```
+
+   2. **typedef struct sigset_t(即struct sigaction中的sa_mask成员)**
+
+      ```c
+      typedef struct {
+      	unsigned long sig[_NSIG_WORDS];
+      } sigset_t;
+      ```
+
+   3. **struct timeval**
+
+      ```c
+      struct timeval
+      {
+          long tv_sec;  /* seconds */
+          long tv_usec; /* microseconds */
+      };
+      ```
+
+   4. **struct itimerval**     															                                               <a id="itimerval"></a>[返回setitimer](#itimerval back)
+
+      ```c
+      struct itimerval 
+      {
+          struct timeval it_interval;// 间隔时间: 字段被设置为非零值，定时器将变为周期性的
+          struct timeval it_value; // 定时器的剩余时间
+          // 当定时器的it_value达到0并触发信号后，it_value会被重新设置为 it_interval 的值，然后定时器再次开始计时
+      };
+      ```
 
 2. **标题** -- cjs
 
