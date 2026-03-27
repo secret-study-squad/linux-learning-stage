@@ -1,8 +1,13 @@
 ## Day29_Friday_Week5_3.27
 
-1. **标题** -- gzh
+1. **线程库** -- gzh
 
-   
+   ```c
+   man 7 pthreads
+   (Linux implementations of POSIX threads
+   LinuxThreads: 并不完全兼容POSIX标准
+   NPTL:   Native POSIX Thread Library)
+   ```
 
 2. **标题** -- cjs
 
