@@ -33,7 +33,11 @@
 
    
 
-8. **标题** -- lw
+![pthread_cleanup_push and pop](..\pics\pthread_cleanup_push and pop.png)
+
+![push and pop 示例](..\pics\push and pop 示例.png)
+
+1. **标题** -- lw
 
 | 对比项       | 普通函数           | 子线程                     | 子进程                        |
 | ------------ | ------------------ | -------------------------- | ----------------------------- |
