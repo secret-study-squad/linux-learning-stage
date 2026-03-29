@@ -11,6 +11,55 @@
 
 2. **标题** -- cjs
 
+   ```c
+   #include <2026Linux.h>
+   void func(int num){
+       printf("num = %d\n",num);
+       sigset_t block_set;
+       sigemptyset(&block_set);
+       sleep(10);
+       sigpending(&block_set);
+       printf("sleep begin\n");
+       if(sigismember(&block_set,2)){
+           printf("2号还有在里面的\n");
+       }
+       if(sigismember(&block_set,3)){
+           printf("3号在里面\n");
+       }
+       printf("sleep over\n");
+   }
+   // 此时值得注意的一个点:
+   // 当我按下2号信号时，此时进入func中，然后我再次按下3号和2号信号(3号先于2号信号)
+   // 此时当第一个2号执行完时，先执行的是2号信号，而不是3号信号
+   //
+   // 原因：在act中我们设置了阻塞3号信号，此时3号信号此时已经在mask集合之中，这是一个前提
+   // 同时当第一个2号信号来的时候，此时2号信号也在mask集合之中了，
+   // 所以当再来2号和3号信号的时候，此时都会放入pending集合之中，
+   // 所以在pending集合之中，会按照信号顺序来取了报送
+   
+   int main(int argc,char *argv[])
+   {
+       struct sigaction act,oldact;
+       memset(&act,0,sizeof(act));
+   
+       act.sa_handler = func;
+       
+       sigset_t set;
+       sigemptyset(&set);
+       sigaddset(&set,3); // 将3号信号加入阻塞，当2号信号在执行的时候
+   
+       act.sa_mask = set;
+   
+       sigaction(2,&act,&oldact);
+   
+       printf("begin while\n");
+       while(1);
+   
+       return 0;
+   }
+   
+   ```
+
    
 
 3. **标题** -- xkz
